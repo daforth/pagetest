@@ -227,6 +227,9 @@ local function substitutions(str)
   str = string.gsub(str, "%[", " rel{")
   str = string.gsub(str, "%]", "}")
 
+  str = string.gsub(str, "%<", "'")
+  str = string.gsub(str, "%>", "'")
+
   str = string.gsub(str, "%:%:%s*%{", " set{")
   str = string.gsub(str, "%.", "..")
   str = string.gsub(str, "\\", "-")
