@@ -219,8 +219,22 @@ local function refreshenv()
   end})
 end
 
+local function substitutions(str)
+  str = string.gsub(str, "([^%+])%+%+%s*'", "%1 sum'")
+  str = string.gsub(str, "([^%.])%.%.%s*'", "%1 pre'")
+  str = string.gsub(str, "([^%|])%|%|%s*'", "%1 par'")
+
+  str = string.gsub(str, "%[", " rel{")
+  str = string.gsub(str, "%]", "}")
+
+  str = string.gsub(str, "%:%:%s*%{", " set{")
+  str = string.gsub(str, "%.", "..")
+  str = string.gsub(str, "\\", "-")
+  return str
+end
+
 function compile(str)
   refreshenv()
-  load(str, nil, "t", pccs)()
+  load(substitutions(str), nil, "t", pccs)()
   return table.concat(pccs.__result, '\n')
 end

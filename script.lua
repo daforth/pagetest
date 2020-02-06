@@ -12,36 +12,34 @@ end
 button:addEventListener("click", comp)
 
 local pipesrc = [[
-  -- Implementation of the PIPE Buffer
+-- Implementation of the PIPE Buffer
 
-  ncel = 3
-  nsym = 2
+ncel = 3
+nsym = 2
 
-  --  Basic Cell Agent
-  proc { LB 'C' , sum 'i:1,nsym' {inn 'i' .. ~out 'i' .. LB 'C' }}
+--  Basic Cell Agent
+proc { LB 'C' , ++ 'i:1,nsym' {inn 'i' . ~out 'i' . LB 'C' }}
 
-  -- Relabaling for Buffer Out
+-- Relabaling for Buffer Out
 
-  proc { LB 'C,ncel+1', rel { LB 'C', {'i:1,nsym', d 'ncel,i' / out 'i'} } }
+proc { LB 'C,ncel+1', [ LB 'C', {'i:1,nsym', d 'ncel,i' / out 'i'} ] }
 
-  -- Relabaling for Buffer In
-  proc { LB 'C,0', rel { LB_C, {'i:1,nsym', d '0,i' / inn 'i'} } }
+-- Relabaling for Buffer In
+proc { LB 'C,0', [ LB_C, {'i:1,nsym', d '0,i' / inn 'i'} ] }
 
-  -- Relabaling for Central Cells
+-- Relabaling for Central Cells
 
-  proc 'i:1,ncel' {LB 'C,i', rel { LB 'C',
-  {'s:1,nsym', d 'i,s' / inn 's' },
-  {'s:1,nsym', d 'i-1,s' / out 's' }
-  }
-  }
+proc 'i:1,ncel' {LB 'C,i', [ LB 'C',
+                                 {'s:1,nsym', d 'i,s' / inn 's' },
+                                 {'s:1,nsym', d 'i-1,s' / out 's' }
+                           ]
+                }
 
-  -- Put all in parallel
+-- Put all in parallel
 
-  dset { Internals, set {{'s:1,nsym', 'i:0,ncel', d 'i,s'}} }
+dset { Internals, :: {{'s:1,nsym', 'i:0,ncel', d 'i,s'}} }
 
-  proc { LB, par 'i:0,ncel+1' {LB 'C,i'} - Internals }
-
-  ]]
+proc { LB, || 'i:0,ncel+1' {LB 'C,i'} \ Internals }]]
 
 example:addEventListener("click", function() input.value = pipesrc end)
 local outvis = true
