@@ -238,11 +238,11 @@ end
 
 function compile(str)
   refreshenv()
-  local ok, forerr = pcall(load, substitutions(str), nil, "t", pccs)
-  if not ok then
-    return forerr
+  local f, err = load(substitutions(str), nil, "t", pccs)
+  if not f then
+    return err
   end
-  local ok, err = pcall(forerr)
+  local ok, err = pcall(f)
   if not ok then
     return err
   else
