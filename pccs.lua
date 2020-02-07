@@ -238,6 +238,14 @@ end
 
 function compile(str)
   refreshenv()
-  load(substitutions(str), nil, "t", pccs)()
-  return table.concat(pccs.__result, '\n')
+  local ok, forerr = pcall(load, substitutions(str), nil, "t", pccs)
+  if not ok then
+    return forerr
+  end
+  local ok, err = pcall(forerr)
+  if not ok then
+    return err
+  else
+    return table.concat(pccs.__result, '\n')
+  end
 end

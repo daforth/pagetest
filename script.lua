@@ -6,8 +6,7 @@ local input = document:getElementById("input")
 local output = document:getElementById("output")
 local example = document:getElementById("example")
 function comp()
-  ok, outerr  = pcall(compile, input.value)
-  output.value = outerr
+  output.value = compile(input.value)
 end
 button:addEventListener("click", comp)
 
